@@ -4,7 +4,32 @@
     https://api.github.com/users/<your name>
     //
 */
+import axios from "axios";
 
+const followersArray = [
+  "Criscosmoes",
+  "Csandrade1",
+  "justsml",
+  "luishrd",
+  "bigknell",
+  "Cperalta10",
+];
+
+for (let i = 0; i < followersArray.length; i++) {
+  createProfiles(followersArray[i]);
+}
+
+function createProfiles(people) {
+  axios
+    .get(`https://api.github.com/users/${people}`)
+    .then((res) => {
+      const finalCard = cardMaker(res.data);
+      document.querySelector(".cards").appendChild(finalCard);
+    })
+    .catch((err) => {
+      console.err(err);
+    });
+}
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -29,8 +54,6 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
-
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
@@ -42,15 +65,56 @@ const followersArray = [];
         <p class="username">{users user name}</p>
         <p>Location: {users location}</p>
         <p>Profile:
-          <a href={address to users github page}>{address to users github page}</a>
-        </p>
+        <a href={address to users github page}>{address to users github page}</a>
+          </p>
         <p>Followers: {users followers count}</p>
         <p>Following: {users following count}</p>
         <p>Bio: {users bio}</p>
       </div>
     </div>
 */
+function cardMaker(singleObj) {
+  const divCard = document.createElement("div");
+  const userImg = document.createElement("img");
+  const divInfo = document.createElement("div");
+  const NameOfUser = document.createElement("h3");
+  const username = document.createElement("p");
+  const location = document.createElement("p");
+  const profile = document.createElement("p");
+  const addressLink = document.createElement("a");
+  const followerCount = document.createElement("p");
+  const followingCount = document.createElement("p");
+  const bio = document.createElement("p");
 
+  divCard.classList.add("card");
+  divInfo.classList.add("card-info");
+  NameOfUser.classList.add("name");
+  username.classList.add("username");
+
+  userImg.src = singleObj["avatar_url"];
+  NameOfUser.textContent = singleObj.name;
+  username.textContent = singleObj.login;
+  location.textContent = "Location: ";
+  profile.textContent = "Profile: ";
+  addressLink.href = singleObj["html_url"];
+  addressLink.textContent = `${singleObj["html_url"]}`;
+  followerCount.textContent = `Followers: ${singleObj["followers_url"]}`;
+  followingCount.textContent = `Following: ${singleObj["following_url"]}`;
+  bio.textContent = `Bio: ${singleObj.bio}`;
+
+  divCard.appendChild(userImg);
+  divCard.appendChild(divInfo);
+  divInfo.appendChild(NameOfUser);
+  divInfo.appendChild(username);
+  divInfo.appendChild(location);
+  divInfo.appendChild(profile);
+  divInfo.appendChild(followerCount);
+  divInfo.appendChild(followingCount);
+  divInfo.appendChild(bio);
+  profile.appendChild(addressLink);
+
+  return divCard;
+}
 /*
   List of LS Instructors Github username's:
     tetondan
